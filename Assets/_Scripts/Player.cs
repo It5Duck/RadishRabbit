@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
         player.gameObject.SetActive(true);
     }
 
+    //Used in Checkpoint.cs
     public static void NextCheckpoint(int index)
     {
         if (currentCheckpoint < index)
@@ -34,6 +35,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    //Used in Checkpoint.cs
     public static int FindCheckPoint(Checkpoint checkpoint)
     {
         for (int i = 0; i < checkpoints.Length; i++)
@@ -44,5 +46,11 @@ public class Player : MonoBehaviour
             }
         }
         return 0;
+    }
+
+    //Returns the current stage, used in StageEnd.cs
+    public static int GetCurrentStage()
+    {
+        return currentStage;
     }
 }

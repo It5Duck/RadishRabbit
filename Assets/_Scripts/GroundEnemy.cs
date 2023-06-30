@@ -22,7 +22,8 @@ public class GroundEnemy : MonoBehaviour
             dir *= -1;
             
         }
-        edgeCheckStart = new Vector3(dir * 0.4f, -0.4f, 0);
+        wallCheckStart = new Vector3(dir * 0.45f, 0f, 0f);
+        edgeCheckStart = new Vector3(dir * 0.4f, -0.4f, 0f);
         transform.localScale = new Vector3(dir, 1, 1); //Make the enemy face the direction it's headed
         rb.velocity = new Vector2(dir * speed, rb.velocity.y);
     }
