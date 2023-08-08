@@ -4224,7 +4224,7 @@ MonoBehaviour:
   animationStartTime: 0
   colliderType: 2
   connectableTiles:
-  - {fileID: 11400000, guid: ad3a45fa31d763e4ebbb6bc17a66c0b2, type: 2}
+  - {fileID: 11400000, guid: 29bead8b64374a44fa0b6ff73550810c, type: 2}
   - {fileID: 11400000, guid: f70a5a12e1bf892418d1dffa70d01a2f, type: 2}
   compiledChannels:
   - {fileID: 8050911951009627212}
