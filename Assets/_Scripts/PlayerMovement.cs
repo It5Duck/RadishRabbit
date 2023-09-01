@@ -22,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float fallMultiplier; //Controls how much the velocity is being multiplied by when falling
     [SerializeField] private float jumpHoldMultiplier; //Controls the jump height based on the time that the jump button being held down
     private bool hasDoubleJump;
+    private bool canControl = true; //This is true if you jump and didn't bounce from a mushroom so you can't get to an insanely high elevation
     private float coyoteCounter; //Gets decreased after the player leaves the ground, and the jump will be still valid as long as it's more than 0
     [SerializeField] private float coyoteTime; //The time that 'coyoteCounter' will start the countdown from
 
@@ -71,6 +72,7 @@ public class PlayerMovement : MonoBehaviour
         //Call jump
         if (Input.GetButtonDown("Jump"))
         {
+            canControl = true;
             if (isOnGround || (coyoteCounter >= 0f && rb.velocity.y <= 0f))
             {
                 Jump(jumpForce);
@@ -84,13 +86,20 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Dynamic falling
-        if (rb.velocity.y < 0f)
+        if (!isOnGround)
         {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1f) * Time.deltaTime; //Calculating the additional gravity that should be applied to the player
-        }
-        else if (rb.velocity.y > 0f && !Input.GetButton("Jump"))
-        {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (jumpHoldMultiplier - 1f) * Time.deltaTime; //Calculating the additional gravity that should be applied to the player
+            if (rb.velocity.y < 0f)
+            {
+                rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1f) * Time.deltaTime; //Calculating the additional gravity that should be applied to the player
+            }
+            else if (rb.velocity.y > 0f && !Input.GetButton("Jump"))
+            {
+                rb.velocity += Vector2.up * Physics2D.gravity.y * (jumpHoldMultiplier - 1f) * Time.deltaTime; //Calculating the additional gravity that should be applied to the player
+            }
+            else if (!canControl)
+            {
+                rb.velocity += Vector2.up * Physics2D.gravity.y * (jumpHoldMultiplier - 1f) * Time.deltaTime;
+            }
         }
 
         Animate(isOnGround);
@@ -209,11 +218,21 @@ public class PlayerMovement : MonoBehaviour
 
 
     [SerializeField] private LayerMask enemyLayer;
-    private void OnCollisionEnter2D(Collision2D collision)
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
             Player.GameOver();
+        }
+        else if (collision.gameObject.CompareTag("Shroom"))
+        {
+            if (transform.position.y > collision.transform.position.y)
+            {
+                collision.gameObject.GetComponent<MushroomAnim>().PlayAnimation();
+                canControl = false;
+                Jump(jumpForce * 2f);
+            }
         }
     }
 }
